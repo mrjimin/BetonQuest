@@ -25,6 +25,7 @@ public interface FunctionProvider {
      * @param name the name of the subroutine
      * @return the subroutine
      * @throws QuestException if a subroutine with that name does not exist
+     * @since 3.1.0
      */
     MathFunction getSubRoutine(String name) throws QuestException;
 }

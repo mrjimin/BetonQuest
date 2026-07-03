@@ -37,7 +37,7 @@ public class StringSourceAssignment implements FunctionAssignment {
 
     @Override
     public boolean asBoolean() {
-        return "true".equalsIgnoreCase(source) || asNumber().intValue() > 0;
+        return "true".equalsIgnoreCase(source) || asNumber().doubleValue() > 0;
     }
 
     @Override

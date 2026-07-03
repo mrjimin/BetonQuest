@@ -1,10 +1,12 @@
 package org.betonquest.betonquest.api.service.function;
 
 import org.betonquest.betonquest.api.QuestException;
+import org.betonquest.betonquest.api.config.quest.QuestPackage;
 import org.betonquest.betonquest.api.function.FunctionAssignment;
 import org.betonquest.betonquest.api.function.FunctionProvider;
 import org.betonquest.betonquest.api.function.MathFunction;
 import org.betonquest.betonquest.api.identifier.FunctionIdentifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ import java.util.List;
  *
  * @since 3.1.0
  */
-public interface Functions extends FunctionProvider {
+public interface Functions {
 
     /**
      * Registers a subroutine for a given name.
@@ -45,4 +47,13 @@ public interface Functions extends FunctionProvider {
      * @since 3.1.0
      */
     FunctionAssignment evaluate(FunctionIdentifier identifier, List<FunctionAssignment> arguments) throws QuestException;
+
+    /**
+     * Get the function provider for the given quest package.
+     *
+     * @param questPackage the quest package to get the function provider for relative identifiers
+     * @return the function provider for the given quest package
+     * @since 3.1.0
+     */
+    FunctionProvider getFunctionProvider(@Nullable QuestPackage questPackage);
 }

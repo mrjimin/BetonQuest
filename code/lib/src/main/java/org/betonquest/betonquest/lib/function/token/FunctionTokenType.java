@@ -16,7 +16,7 @@ public enum FunctionTokenType {
      *
      * @since 3.1.0
      */
-    IDENTIFIER("^\\{(?<value>.+)\\}"),
+    IDENTIFIER("^\\{(?<value>([a-zA-Z0-9\\-\\_]+\\>)?([a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*)?)\\}"),
 
     /**
      * Matches a string literal.

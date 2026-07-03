@@ -21,9 +21,9 @@ import java.util.Map;
  * <pre>
  * {@code
  * <value> ::= <number> | <string> | 'true' | 'false'
- * <parameter> ::= <qualifier> | <qualifier> : <value>
- * <parameter-list> ::= <parameter> | <parameter> , <parameter-list>
- * <definition> ::= <qualifier> | <qualifier>(<parameter-list>)
+ * <parameter> ::= <qualifier> | <qualifier> ':' <value>
+ * <parameter-list> ::= <parameter> | <parameter> ',' <parameter-list>
+ * <definition> ::= <qualifier>(<parameter-list>)
  * }
  * </pre>
  *

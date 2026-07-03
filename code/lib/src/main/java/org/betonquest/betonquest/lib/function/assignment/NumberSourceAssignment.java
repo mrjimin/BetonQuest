@@ -16,12 +16,18 @@ public class NumberSourceAssignment implements FunctionAssignment {
 
     /**
      * Creates a new NumberSourceAssignment.
+     * <p>
+     * Ensures that the source number is long or double by converting floats to doubles and everything else to longs.
      *
      * @param source the source number
      * @since 3.1.0
      */
     public NumberSourceAssignment(final Number source) {
-        this.source = source;
+        if (source instanceof Float || source instanceof Double) {
+            this.source = source.doubleValue();
+        } else {
+            this.source = source.longValue();
+        }
     }
 
     @Override
@@ -36,7 +42,7 @@ public class NumberSourceAssignment implements FunctionAssignment {
 
     @Override
     public boolean asBoolean() {
-        return asNumber().longValue() > 0;
+        return asNumber().doubleValue() > 0;
     }
 
     @Override
