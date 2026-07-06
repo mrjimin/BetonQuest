@@ -71,6 +71,7 @@ nav:
       - 'Quick Guides':
           - 'Quest Progress & State':
               - 'Displaying Progress': Tutorials/Quick-Guides/Quest-Progress-and-State/Displaying-Progress.md
+              - 'Debugging Conditions and Objectives': Tutorials/Quick-Guides/Debugging-Conditions-and-Objectives.md
               - 'Objectives in any Order': Tutorials/Quick-Guides/Quest-Progress-and-State/Objectives-in-any-order.md
           - 'Player UI & Feedback':
               - 'Using the Journal': Tutorials/Quick-Guides/Player-UI-and-Feedback/Using-the-Journal.md
