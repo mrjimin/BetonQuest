@@ -70,21 +70,21 @@ nav:
           - 'Quest Packages': Tutorials/Syntax/Quest-Packages.md
       - 'Quick Guides':
           - 'Quest Progress & State':
-              - 'Displaying Progress': Tutorials/Quick-Guides/Displaying-Progress.md
-              - 'Objectives in any Order': Tutorials/Quick-Guides/Objectives-in-any-order.md
+              - 'Displaying Progress': Tutorials/Quick-Guides/Quest-Progress-and-State/Displaying-Progress.md
+              - 'Objectives in any Order': Tutorials/Quick-Guides/Quest-Progress-and-State/Objectives-in-any-order.md
           - 'Player UI & Feedback':
-              - 'Using the Journal': Tutorials/Quick-Guides/Using-the-Journal.md
-              - 'Using Menus': Tutorials/Quick-Guides/Using-Menus.md
+              - 'Using the Journal': Tutorials/Quick-Guides/Player-UI-and-Feedback/Using-the-Journal.md
+              - 'Using Menus': Tutorials/Quick-Guides/Player-UI-and-Feedback/Using-Menus.md
           - 'Quest Flow & Lifecycle':
-              - 'Quest Cancelers': Tutorials/Quick-Guides/Using-Quest-Cancelers.md
-              - 'Random Daily Quest': Tutorials/Quick-Guides/Random-Daily-Quest.md
+              - 'Quest Cancelers': Tutorials/Quick-Guides/Quest-Flow-and-Lifecycle/Using-Quest-Cancelers.md
+              - 'Random Daily Quest': Tutorials/Quick-Guides/Quest-Flow-and-Lifecycle/Random-Daily-Quest.md
           - 'Items & Inventory':
-              - 'Complex Quest Items': Tutorials/Quick-Guides/Complex-Quest-Items.md
+              - 'Complex Quest Items': Tutorials/Quick-Guides/Items-and-Inventory/Complex-Quest-Items.md
           - 'Multiplayer & Global Quests':
-              - 'Global Daily Quests': Tutorials/Quick-Guides/Global-Random-Daily-Quests.md
-              - 'Server Wide Quests': Tutorials/Quick-Guides/Server-Wide-Quests.md
+              - 'Global Daily Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Global-Random-Daily-Quests.md
+              - 'Server Wide Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Server-Wide-Quests.md
           - 'World, NPCs & Visibility':
-              - 'NPC and Player Hider': Tutorials/Quick-Guides/NPC-and-Player-Hider.md
+              - 'NPC and Player Hider': Tutorials/Quick-Guides/World-NPCs-and-Visibility/NPC-and-Player-Hider.md
   - 'Documentation':
       - 'Overview': Documentation/Overview.md
 
