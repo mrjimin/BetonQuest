@@ -1,5 +1,7 @@
 package org.betonquest.betonquest.api.function;
 
+import org.betonquest.betonquest.api.QuestException;
+
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +19,8 @@ public interface FunctionDefinition {
      *
      * @param assignments the assignments to map
      * @return the assigned values
+     * @throws QuestException if the assignment fails due to insufficient arguments
      * @since 3.1.0
      */
-    Map<String, FunctionAssignment> assign(List<FunctionAssignment> assignments);
+    Map<String, FunctionAssignment> assign(List<FunctionAssignment> assignments) throws QuestException;
 }
