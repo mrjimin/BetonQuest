@@ -5,7 +5,7 @@ icon: material/account-group
 # How to assign the same random daily quest to every player
 
 Using schedules, you can assign the same random daily quest to every player each day.
-Instead of selecting a [random quest individually for every player](Random-Daily-Quest.md),
+Instead of selecting a [random quest individually for every player](../Quest-Flow-and-Lifecycle/Random-Daily-Quest.md),
 a global tag determines which quest is active for everyone.
 
 
