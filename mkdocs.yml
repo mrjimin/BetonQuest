@@ -81,7 +81,7 @@ nav:
           - 'Items & Inventory':
               - 'Complex Quest Items': Tutorials/Quick-Guides/Items-and-Inventory/Complex-Quest-Items.md
           - 'Multiplayer & Global Quests':
-              - 'Party Quests': Tutorials/Quick-Guides/Party-Quests.md
+              - 'Party Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Party-Quests.md
               - 'Global Daily Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Global-Random-Daily-Quests.md
               - 'Server Wide Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Server-Wide-Quests.md
           - 'World, NPCs & Visibility':
