@@ -2,9 +2,9 @@
 icon: material/translate
 ---
 
-# How to make language-specific quest text
+# How to make language-specific text
 
-Language-specific quest text lets players see conversations, notifications, journal entries, menus, and other quest UI
+Language-specific text lets players see conversations, notifications, journal entries, menus, and other quest UI
 in their selected language.
 BetonQuest uses language keys like `en-US` and `de-DE` and falls back to the default language if a translation is
 missing.
