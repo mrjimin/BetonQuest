@@ -26,6 +26,7 @@ import org.betonquest.betonquest.api.service.condition.ConditionManager;
 import org.betonquest.betonquest.api.service.condition.ConditionRegistry;
 import org.betonquest.betonquest.api.service.condition.Conditions;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
+import org.betonquest.betonquest.api.service.function.Functions;
 import org.betonquest.betonquest.api.service.identifier.Identifiers;
 import org.betonquest.betonquest.api.service.instruction.Instructions;
 import org.betonquest.betonquest.api.service.item.ItemManager;
@@ -274,4 +275,13 @@ public interface BetonQuestApi {
      */
     @Contract(pure = true)
     BukkitManager bukkit();
+
+    /**
+     * Offers access to the functions.
+     *
+     * @return the functions
+     * @since 3.1.0
+     */
+    @Contract(pure = true)
+    Functions functions();
 }

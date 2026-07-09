@@ -17,6 +17,7 @@ import org.betonquest.betonquest.api.service.action.Actions;
 import org.betonquest.betonquest.api.service.compass.CompassManager;
 import org.betonquest.betonquest.api.service.condition.Conditions;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
+import org.betonquest.betonquest.api.service.function.Functions;
 import org.betonquest.betonquest.api.service.identifier.Identifiers;
 import org.betonquest.betonquest.api.service.instruction.Instructions;
 import org.betonquest.betonquest.api.service.item.Items;
@@ -51,7 +52,7 @@ public class BetonQuestApiComponent extends AbstractCoreComponent {
                 QuestPackageManager.class, BetonQuestLoggerFactory.class, ProfileProvider.class,
                 Identifiers.class, Instructions.class, Actions.class, Conditions.class, Objectives.class,
                 Placeholders.class, Conversations.class, Items.class, Npcs.class, FontRegistry.class, Reloader.class,
-                Persistence.class, CompassManager.class, Localizations.class);
+                Persistence.class, CompassManager.class, Localizations.class, Functions.class);
     }
 
     @Override
@@ -79,6 +80,7 @@ public class BetonQuestApiComponent extends AbstractCoreComponent {
         final Persistence persistence = getDependency(Persistence.class);
         final CompassManager compassManager = getDependency(CompassManager.class);
         final Localizations localizations = getDependency(Localizations.class);
+        final Functions functions = getDependency(Functions.class);
         final Plugin plugin = getDependency(Plugin.class);
 
         final BetonQuestLogger serviceLogger = loggerFactory.create(BetonQuestApiService.class);
@@ -87,7 +89,7 @@ public class BetonQuestApiComponent extends AbstractCoreComponent {
             final BukkitManager bukkitManager = new DefaultBukkitManager(callerPlugin);
             return new DefaultBetonQuestApi(callerPlugin, profileProvider, packManager, loggerFactory, instructions,
                     actions, conditions, objectives, placeholders, items, npcs, conversations, identifiers,
-                    fontRegistry, reloader, persistence, compassManager, localizations, bukkitManager);
+                    fontRegistry, reloader, persistence, compassManager, localizations, bukkitManager, functions);
         };
         final DefaultBetonQuestApiService defaultBetonQuestApiService = new DefaultBetonQuestApiService(defaultBetonQuestApiGenerator);
         servicesManager.register(BetonQuestApiService.class, defaultBetonQuestApiService, plugin, ServicePriority.Highest);
@@ -131,6 +133,7 @@ public class BetonQuestApiComponent extends AbstractCoreComponent {
      * @param compasses      the compass manager
      * @param localizations  the localizations
      * @param bukkit         the bukkit manager
+     * @param functions      the function api accessor
      */
     /* default */ record DefaultBetonQuestApi(Plugin attachedPlugin, ProfileProvider profiles,
                                               QuestPackageManager packages,
@@ -140,8 +143,8 @@ public class BetonQuestApiComponent extends AbstractCoreComponent {
                                               Conversations conversations, Identifiers identifiers,
                                               FontRegistry fonts, Reloader reloader,
                                               Persistence persistence, CompassManager compasses,
-                                              Localizations localizations,
-                                              BukkitManager bukkit) implements BetonQuestApi {
+                                              Localizations localizations, BukkitManager bukkit,
+                                              Functions functions) implements BetonQuestApi {
 
     }
 }
