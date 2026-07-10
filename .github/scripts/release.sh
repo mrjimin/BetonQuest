@@ -128,6 +128,8 @@ releasePrepareModule() {
 
 releasePublish() {
   echo 'Release'
+  checkReleaseTagsFor .
+  checkReleaseTagsFor docs/_tutorials
 
   echo '    Creating version tag for betonquest...'
   git tag "v$CURRENT_VERSION" HEAD 2>&1 > /dev/null | sed 's/^/        /'
@@ -149,6 +151,15 @@ releasePublish() {
   git push "$RELEASE_REMOTE_REPOSITORY" "${TAGS_TO_PUSH[@]}" 2>&1 > /dev/null | sed 's/^/        /'
 
   echo '    DONE'
+}
+
+checkReleaseTagsFor() {
+  local repo=$1
+  if [[ -n $(git -C "$repo" tag -l "v$CURRENT_VERSION*") ]]; then
+    echo "Found matching tags that already exist in $repo"
+    git -C "$repo" tag -l "v$CURRENT_VERSION*" | sed 's/^/        /'
+    exit 1
+  fi
 }
 
 setupPrepare() {
