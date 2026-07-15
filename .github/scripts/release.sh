@@ -128,6 +128,7 @@ releasePrepareModule() {
 
 releasePublish() {
   echo 'Release'
+  checkDeploymentMaven
 
   echo '    Creating version tag for betonquest...'
   checkReleaseTagsFor . "v$CURRENT_VERSION"
@@ -154,6 +155,22 @@ releasePublish() {
 
   echo '    DONE'
 }
+
+checkDeploymentMaven() {
+  api="https://repo.betonquest.org/api/pommapper/id/BetonQuest?snapshots=false"
+
+  local response
+  if ! response="$(curl --silent --show-error --fail "$api")"; then
+    echo '    Failed to query the Maven repository API!'
+    exit 1
+  fi
+
+  if echo "$response" | grep -q "\"group\":\"$CURRENT_VERSION\""; then
+    echo "    Version $CURRENT_VERSION is already deployed to the Maven repository!"
+    exit 1
+  fi
+}
+
 
 checkReleaseTagsFor() {
   local repo=$1
