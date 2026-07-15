@@ -206,6 +206,16 @@ setupCommit() {
   NEW_CHANGELOG="## \[Unreleased\] - \${maven.build.timestamp}\n### Added\n### Changed\n### Deprecated\n### Removed\n### Fixed\n### Security\n"
   sed -i "s~## \[Unreleased\] - \${maven\.build\.timestamp}~$NEW_CHANGELOG\n## \[$CURRENT_VERSION\] - $RELEASE_TIME~g" CHANGELOG.md 2>&1 > /dev/null | sed 's/^/        /'
 
+  CURRENT_MAJOR="${CURRENT_VERSION%%.*}"
+  NEW_MAJOR="${NEW_VERSION%%.*}"
+  if [ "$CURRENT_MAJOR" != "$NEW_MAJOR" ]; then
+    echo '    Updating SECURITY.md file...'
+    sed -i 's/:white_check_mark:/:x:               /g' SECURITY.md
+    printf -v PADDED_MAJOR "%-7s" "$NEW_MAJOR"
+    NEW_SECURITY="|---------|--------------------|\n| $PADDED_MAJOR | :white_check_mark: |"
+    sed -i "s~|---------|--------------------|~$NEW_SECURITY~g" SECURITY.md 2>&1 > /dev/null | sed 's/^/        /'
+  fi
+
   echo '    Committing changed files...'
   git -c core.safecrlf=false commit --all --message="Bump version of BetonQuest to $NEW_VERSION" 2>&1 > /dev/null | sed 's/^/        /'
 }
