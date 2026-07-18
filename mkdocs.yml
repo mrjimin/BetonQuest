@@ -64,7 +64,7 @@ nav:
               - 'Daily Repetition': Tutorials/Features/Schedules/Daily-Repetition.md
               - 'Delayed Quest Steps': Tutorials/Features/Schedules/Delayed-Quest-Steps.md
               - 'Limited Time Events': Tutorials/Features/Schedules/Limited-Time-Events.md
-      - 'Tooling':
+      - 'Tools':
           - 'Handling YAML Errors': Tutorials/Tools/YAML-Errors.md
           - 'Debugging Quest Logic': Tutorials/Tools/Debugging-Quest-Logic.md
       - 'Syntax':
