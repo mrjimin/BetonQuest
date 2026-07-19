@@ -6,6 +6,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] - ${maven.build.timestamp}
 ### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
+## [3.1.0] - 2026-07-19
+### Added
 - `language.questlang_whitelist` to restrict which languages players can select via `/questlang`
 - nesting in quest packages for single line instruction types
 - `unit` optional argument in `burn` action to specify the time unit for the duration
