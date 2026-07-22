@@ -6,6 +6,63 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] - ${maven.build.timestamp}
 ### Added
+- `dialog` conversation IO settings to configure
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
+## [3.1.0] - 2026-07-19
+### Added
+- `language.questlang_whitelist` to restrict which languages players can select via `/questlang`
+- nesting in quest packages for single line instruction types
+- `unit` optional argument in `burn` action to specify the time unit for the duration
+- `translate` placeholder parsing languages from `constants` section
+- `heal` action to change the current health of a player
+- `functions` section to define mathematical functions
+- `function` condition to evaluate a function as a condition
+- `TheBrewingProject` integration as modern alternative to Brewery
+- `base_speed` option to menu conv io to avoid zooming effect at risk of permanent modification
+### Changed
+- `language` config option is now a section; the default language moved to `language.default`
+- `burn` action to no longer require its duration argument to specify its name `duration`
+- `mmoitem` now checks for soulbound when set
+- `worldguard` integration version requirement to 7.0.16
+- `worldedit` integration version requirement to 7.3.19
+### Deprecated
+### Removed
+### Fixed
+- `/questlang` command error message listing the available languages incorrectly
+- ConcurrentModificationException in statistics calculation
+### Security
+
+## [3.0.2] - 2026-06-24
+### Added
+- new GitHub issue templates to allow for better issue reporting and feature requests
+### Changed
+- release script to simplify the release process of coming versions
+### Deprecated
+### Removed
+### Fixed
+- `FastStats` error tracker not working properly
+- Javadocs of the api module missing the `@since` tag
+- `point`, `globalpoint`, `score`, `money` action legacy multiply migration did not work
+### Security
+
+## [3.0.1] - 2026-06-19
+### Added
+### Changed
+### Deprecated
+- `InstructionParts` as part of the API that should have been deprecated for 3.0.0 already
+### Removed
+### Fixed
+- FastStats metrics would always be collected on the first start
+- integrations with non-semver versions caused errors
+### Security
+
+## [3.0.0] - 2026-06-13
+### Added
 - `package.version` for quest packages and quest templates
 - `constants` can be addressed with the new constant placeholder
 - `bypass` keyword to `cancel` action to ignore conditions in quest cancelers
@@ -52,7 +109,6 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - new notification category `conversation_nothing_to_start`
     - config option `conversation.interceptor.display_history` to allow the interceptor to send the chat history after a conversation
     - config option `conversation.interceptor.delay` to configure a delay between the end of a conversation and the moment the interceptor is ended
-    - `dialog` conversation IO settings to configure
 - new objectives
     - `timer` to track ingame time
     - `point` to track point changes

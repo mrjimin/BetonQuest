@@ -2,6 +2,11 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+printNewSection() {
+  echo
+  echo
+}
+
 printHelp() {
   printNewSection
   echo 'HELP'
@@ -123,6 +128,10 @@ releasePrepareModule() {
 
 releasePublish() {
   echo 'Release'
+  checkReleaseTagsFor . "v$CURRENT_VERSION*"
+  checkReleaseTagsFor docs/_tutorials "v$CURRENT_VERSION"
+  checkDeploymentMaven
+  checkDeploymentGhPages
 
   echo '    Creating version tag for betonquest...'
   git tag "v$CURRENT_VERSION" HEAD 2>&1 > /dev/null | sed 's/^/        /'
@@ -146,6 +155,48 @@ releasePublish() {
   echo '    DONE'
 }
 
+checkDeploymentMaven() {
+  api="https://repo.betonquest.org/api/pommapper/id/BetonQuest?snapshots=false"
+
+  local response
+  if ! response="$(curl --silent --show-error --fail "$api")"; then
+    echo '    Failed to query the Maven repository API!'
+    exit 1
+  fi
+
+  if echo "$response" | grep -q "\"group\":\"$CURRENT_VERSION\""; then
+    echo "    Version $CURRENT_VERSION is already deployed to the Maven repository!"
+    exit 1
+  fi
+}
+
+checkDeploymentGhPages() {
+  local major="${CURRENT_VERSION%.*}"
+  local url="https://raw.githubusercontent.com/BetonQuest/BetonQuest/refs/heads/gh-pages/$major/Documentation/CHANGELOG/index.html"
+
+  local response
+  if ! response="$(curl --silent --fail "$url" 2>/dev/null)"; then
+    return
+  fi
+
+  if echo "$response" | grep -Fq "$CURRENT_VERSION" &&
+     ! echo "$response" | grep -Fq "${CURRENT_VERSION}-DEV"; then
+    echo "    Version $CURRENT_VERSION is already deployed to the documentation!"
+    exit 1
+  fi
+}
+
+
+checkReleaseTagsFor() {
+  local repo=$1
+  local pattern=$2
+  if [[ -n $(git -C "$repo" tag -l "$pattern") ]]; then
+    echo "Found matching tags that already exist in $repo"
+    git -C "$repo" tag -l "$pattern" | sed 's/^/        /'
+    exit 1
+  fi
+}
+
 setupPrepare() {
   printNewSection
   echo 'Setup:'
@@ -158,15 +209,13 @@ setupPrepare() {
 setupPrepareSelectTimeDefaultValue() {
   DEFAULT_RELEASE_TIME="$(date +%Y-%m-%d)"
   DEFAULT_RELEASE_TIME_MESSAGE=''
-  if [ "$GH_CLI_SUPPORT" ]; then
-    set +e
-    GH_RELEASE_DATE="$(gh release view "v$CURRENT_VERSION" --json publishedAt >&1 2> /dev/null)"
-    set -e
-    GH_RELEASE_KEY="${GH_RELEASE_DATE:0:16}"
-    if [ "$GH_RELEASE_KEY" == '{\"publishedAt\":\"' ]; then
-      DEFAULT_RELEASE_TIME=${GH_RELEASE_DATE:16:10}
-      DEFAULT_RELEASE_TIME_MESSAGE='(the default time was extracted from the release tag)'
-    fi
+  set +e
+  GH_RELEASE_DATE="$(gh release view "v$CURRENT_VERSION" --json publishedAt >&1 2> /dev/null)"
+  set -e
+  GH_RELEASE_KEY="${GH_RELEASE_DATE:0:16}"
+  if [ "$GH_RELEASE_KEY" == '{\"publishedAt\":\"' ]; then
+    DEFAULT_RELEASE_TIME=${GH_RELEASE_DATE:16:10}
+    DEFAULT_RELEASE_TIME_MESSAGE='(the default time was extracted from the release tag)'
   fi
 }
 
@@ -189,8 +238,42 @@ setupCommit() {
   NEW_CHANGELOG="## \[Unreleased\] - \${maven.build.timestamp}\n### Added\n### Changed\n### Deprecated\n### Removed\n### Fixed\n### Security\n"
   sed -i "s~## \[Unreleased\] - \${maven\.build\.timestamp}~$NEW_CHANGELOG\n## \[$CURRENT_VERSION\] - $RELEASE_TIME~g" CHANGELOG.md 2>&1 > /dev/null | sed 's/^/        /'
 
+  setupRoadmap
+
+  CURRENT_MAJOR="${CURRENT_VERSION%%.*}"
+  NEW_MAJOR="${NEW_VERSION%%.*}"
+  if [ "$CURRENT_MAJOR" != "$NEW_MAJOR" ]; then
+    echo '    Updating SECURITY.md file...'
+    sed -i 's/:white_check_mark:/:x:               /g' SECURITY.md
+    printf -v PADDED_MAJOR "%-7s" "$NEW_MAJOR"
+    NEW_SECURITY="|---------|--------------------|\n| $PADDED_MAJOR | :white_check_mark: |"
+    sed -i "s~|---------|--------------------|~$NEW_SECURITY~g" SECURITY.md 2>&1 > /dev/null | sed 's/^/        /'
+  fi
+
   echo '    Committing changed files...'
   git -c core.safecrlf=false commit --all --message="Bump version of BetonQuest to $NEW_VERSION" 2>&1 > /dev/null | sed 's/^/        /'
+}
+
+setupRoadmap() {
+  CURRENT_VERSION_SHORT="${CURRENT_VERSION%.*}"
+
+  CURRENT_ROADMAP_VERSION="$(jq -r '.meta.history.start' docs/_roadmap/roadmap.json).0"
+
+  if [[ "$NEW_VERSION" == "$CURRENT_ROADMAP_VERSION" ]]; then
+    echo '    No changes to Roadmap needed. Skipping...'
+    return
+  fi
+
+  CHANGELOG_LINK="Documentation/CHANGELOG/#${CURRENT_VERSION//./}-${RELEASE_TIME}"
+
+  echo '    Updating roadmap.json file...'
+  jq --arg version "$CURRENT_VERSION_SHORT" \
+     '(.meta.history.start) = $version' docs/_roadmap/roadmap.json > map-tmp.json && mv map-tmp.json docs/_roadmap/roadmap.json
+
+  echo '    Updating info-text.json file...'
+  jq --arg link "$CHANGELOG_LINK" \
+     --arg version "$CURRENT_VERSION_SHORT" \
+     '(.info[] | select(.id == $version) | .tiles.center.link) = $link' docs/_roadmap/info-text.json > text-tmp.json && mv text-tmp.json docs/_roadmap/info-text.json
 }
 
 bumpCommit() {
@@ -229,24 +312,20 @@ finalizeAndPublish() {
 }
 
 setupPublishCreatePullRequest() {
-  if [ "$GH_CLI_SUPPORT" ]; then
-    CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-    if [ "$CURRENT_BRANCH" != 'HEAD' ]; then
-      setupPublishCreatePullRequestSlug
-      gh pr create \
-        --assignee '@me' \
-        --title "Version bump to $NEW_VERSION" \
-        --body "This is an automatically created PR from the release script" \
-        --base "$CURRENT_BRANCH" \
-        --head "$SETUP_REMOTE_SLUG:$SETUP_REMOTE_BRANCH" \
-        --repo "$SETUP_REMOTE_SLUG/BetonQuest" \
-        2>&1 > /dev/null | sed 's/^/        /'
-        return
-    else
-      echo '    ! Looks like no branch is checked out. Create the pull request manually!'
-    fi
+  CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+  if [ "$CURRENT_BRANCH" != 'HEAD' ]; then
+    setupPublishCreatePullRequestSlug
+    gh pr create \
+      --assignee '@me' \
+      --title "Version bump to $NEW_VERSION" \
+      --body "This is an automatically created PR from the release script" \
+      --base "$CURRENT_BRANCH" \
+      --head "$SETUP_REMOTE_SLUG:$SETUP_REMOTE_BRANCH" \
+      --repo "BetonQuest/BetonQuest" \
+      2>&1 > /dev/null | sed 's/^/        /'
+      return
   else
-    echo '    ! You do not have '"'GitHub CLI'"' installed. Create the pull request manually!'
+    echo '    ! Looks like no branch is checked out. Create the pull request manually!'
   fi
   echo "    The changes are already in your repository $SETUP_REMOTE_REPOSITORY in branch $SETUP_REMOTE_BRANCH"
 }
@@ -302,12 +381,12 @@ bumpPrepare() {
 
 goToRootDirectory
 
-source "./.github/scripts/release_utils.sh"
+source "./.github/scripts/release_requirements.sh"
 source "./.github/scripts/release_prompts.sh"
 
 PREVIOUS_HEAD=$(git rev-parse HEAD)
-printHelp
 checkRequirements
+printHelp
 selectAction
 
 version

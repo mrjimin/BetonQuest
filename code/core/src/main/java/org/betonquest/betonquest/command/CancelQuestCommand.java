@@ -1,22 +1,13 @@
 package org.betonquest.betonquest.command;
 
-import org.betonquest.betonquest.api.config.ConfigAccessor;
-import org.betonquest.betonquest.api.config.Localizations;
-import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.profile.OnlineProfile;
 import org.betonquest.betonquest.api.profile.ProfileProvider;
-import org.betonquest.betonquest.api.service.compass.CompassManager;
-import org.betonquest.betonquest.api.service.identifier.Identifiers;
-import org.betonquest.betonquest.api.service.item.ItemManager;
-import org.betonquest.betonquest.data.PlayerDataStorage;
-import org.betonquest.betonquest.feature.Backpack;
 import org.betonquest.betonquest.feature.Backpack.DisplayType;
-import org.betonquest.betonquest.kernel.processor.feature.CancelerProcessor;
+import org.betonquest.betonquest.feature.BackpackFactory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 /**
  * The /cancelquest command. It opens the list of quests.
@@ -25,84 +16,24 @@ import org.bukkit.plugin.Plugin;
 public class CancelQuestCommand implements CommandExecutor {
 
     /**
-     * The plugin configuration file.
-     */
-    private final ConfigAccessor config;
-
-    /**
-     * The {@link Localizations} instance.
-     */
-    private final Localizations localizations;
-
-    /**
      * The profile provider instance.
      */
     private final ProfileProvider profileProvider;
 
     /**
-     * The plugin instance.
+     * Factory to create backpacks.
      */
-    private final Plugin plugin;
-
-    /**
-     * The logger factory.
-     */
-    private final BetonQuestLoggerFactory loggerFactory;
-
-    /**
-     * The player data storage.
-     */
-    private final PlayerDataStorage playerDataStorage;
-
-    /**
-     * The canceler processor.
-     */
-    private final CancelerProcessor cancelerProcessor;
-
-    /**
-     * The compass manager.
-     */
-    private final CompassManager compassManager;
-
-    /**
-     * The identifier registry.
-     */
-    private final Identifiers identifiers;
-
-    /**
-     * The item manager.
-     */
-    private final ItemManager itemManager;
+    private final BackpackFactory backpackFactory;
 
     /**
      * Creates a new executor for the /cancelquest command.
      *
-     * @param plugin            the plugin instance
-     * @param config            the plugin configuration file
-     * @param localizations     the {@link Localizations} instance
-     * @param profileProvider   the profile provider instance
-     * @param loggerFactory     the logger factory
-     * @param playerDataStorage the player data storage
-     * @param cancelerProcessor the canceler processor
-     * @param compassManager    the compass manager
-     * @param identifiers       the identifier registry
-     * @param itemManager       the item manager
+     * @param profileProvider the profile provider instance
+     * @param backpackFactory the factory to create backpacks
      */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
-    public CancelQuestCommand(final Plugin plugin, final ConfigAccessor config, final Localizations localizations,
-                              final ProfileProvider profileProvider, final BetonQuestLoggerFactory loggerFactory,
-                              final PlayerDataStorage playerDataStorage, final CancelerProcessor cancelerProcessor,
-                              final CompassManager compassManager, final Identifiers identifiers, final ItemManager itemManager) {
-        this.plugin = plugin;
-        this.config = config;
-        this.localizations = localizations;
+    public CancelQuestCommand(final ProfileProvider profileProvider, final BackpackFactory backpackFactory) {
         this.profileProvider = profileProvider;
-        this.loggerFactory = loggerFactory;
-        this.playerDataStorage = playerDataStorage;
-        this.cancelerProcessor = cancelerProcessor;
-        this.compassManager = compassManager;
-        this.identifiers = identifiers;
-        this.itemManager = itemManager;
+        this.backpackFactory = backpackFactory;
     }
 
     @Override
@@ -110,8 +41,7 @@ public class CancelQuestCommand implements CommandExecutor {
         if ("cancelquest".equalsIgnoreCase(cmd.getName())) {
             if (sender instanceof Player) {
                 final OnlineProfile onlineProfile = profileProvider.getProfile((Player) sender);
-                new Backpack(plugin, loggerFactory.create(Backpack.class), playerDataStorage.get(onlineProfile), cancelerProcessor,
-                        compassManager, config, localizations, onlineProfile, itemManager, identifiers, DisplayType.CANCEL);
+                backpackFactory.createBackpack(onlineProfile, DisplayType.CANCEL);
             }
             return true;
         }

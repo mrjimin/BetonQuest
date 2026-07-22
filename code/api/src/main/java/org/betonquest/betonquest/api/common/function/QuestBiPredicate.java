@@ -9,6 +9,7 @@ import java.util.Objects;
  *
  * @param <T> the type of the first input to the method
  * @param <U> the type of the second input to the method
+ * @since 3.0.0
  */
 @FunctionalInterface
 public interface QuestBiPredicate<T, U> {
@@ -21,6 +22,7 @@ public interface QuestBiPredicate<T, U> {
      * @return {@code true} if the input arguments match the predicate,
      * otherwise {@code false}
      * @throws QuestException when the method execution fails
+     * @since 3.0.0
      */
     boolean test(T first, U second) throws QuestException;
 
@@ -39,9 +41,9 @@ public interface QuestBiPredicate<T, U> {
      * @return a composed predicate that represents the short-circuiting logical
      * AND of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
-     * @throws QuestException       when the method execution fails
+     * @since 3.0.0
      */
-    default QuestBiPredicate<T, U> and(final QuestBiPredicate<? super T, ? super U> other) throws QuestException {
+    default QuestBiPredicate<T, U> and(final QuestBiPredicate<? super T, ? super U> other) {
         Objects.requireNonNull(other);
         return (T t, U u) -> test(t, u) && other.test(t, u);
     }
@@ -52,9 +54,9 @@ public interface QuestBiPredicate<T, U> {
      *
      * @return a predicate that represents the logical negation of this
      * predicate
-     * @throws QuestException when the method execution fails
+     * @since 3.0.0
      */
-    default QuestBiPredicate<T, U> negate() throws QuestException {
+    default QuestBiPredicate<T, U> negate() {
         return (T t, U u) -> !test(t, u);
     }
 
@@ -73,10 +75,10 @@ public interface QuestBiPredicate<T, U> {
      * @return a composed predicate that represents the short-circuiting logical
      * OR of this predicate and the {@code other} predicate
      * @throws NullPointerException if other is null
-     * @throws QuestException       when the method execution fails
+     * @since 3.0.0
      */
     @SuppressWarnings("PMD.ShortMethodName")
-    default QuestBiPredicate<T, U> or(final QuestBiPredicate<? super T, ? super U> other) throws QuestException {
+    default QuestBiPredicate<T, U> or(final QuestBiPredicate<? super T, ? super U> other) {
         Objects.requireNonNull(other);
         return (T t, U u) -> test(t, u) || other.test(t, u);
     }

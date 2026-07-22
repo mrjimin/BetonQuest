@@ -4,12 +4,10 @@ import org.betonquest.betonquest.api.config.section.multi.MultiConfiguration;
 import org.betonquest.betonquest.config.quest.QuestFixture;
 import org.betonquest.betonquest.lib.config.patcher.migration.QuestMigration;
 import org.betonquest.betonquest.lib.config.quest.Quest;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Generic tests for Migration types.
@@ -19,15 +17,19 @@ class QuestMigrationTest extends QuestFixture {
     @Test
     void test_flat() throws IOException, InvalidConfigurationException {
         original.loadFromString("""
+                # Test Comment 1
                 old:
-                    type: beton
+                  # Test Comment 2
+                  type: beton
                 """);
         final Quest quest = setupQuest("other.yml");
         new RenameSection("old", "new").migrate(quest);
         quest.saveAll();
         expected.loadFromString("""
+                # Test Comment 1
                 new:
-                    type: beton
+                  # Test Comment 2
+                  type: beton
                 """);
         checkAssertion(quest, "other.yml");
     }
@@ -35,16 +37,22 @@ class QuestMigrationTest extends QuestFixture {
     @Test
     void test_deep() throws IOException, InvalidConfigurationException {
         original.loadFromString("""
+                # Test Comment 1
                 old:
+                  # Test Comment 2
                   avc:
+                    # Test Comment 3
                     type: beton
                 """);
         final Quest quest = setupQuest("other.yml");
         new RenameSection("old", "new").migrate(quest);
         quest.saveAll();
         expected.loadFromString("""
+                # Test Comment 1
                 new:
+                  # Test Comment 2
                   avc:
+                    # Test Comment 3
                     type: beton
                 """);
         checkAssertion(quest, "other.yml");
@@ -72,6 +80,37 @@ class QuestMigrationTest extends QuestFixture {
         checkAssertion(quest, "other.yml");
     }
 
+    @Test
+    void migrateSubSectionsForSingeLineInstructions() throws InvalidConfigurationException, IOException {
+        original.loadFromString("""
+                bar:
+                  foo1: oldValue Bob 0;0;0;world
+                  foo:
+                    two: oldValue Bob 0;0;0;world
+                    three: different Bob
+                """);
+        expected.loadFromString("""
+                bar:
+                  foo1: newValue Bob 0;0;0;world
+                  foo:
+                    two: newValue Bob 0;0;0;world
+                    three: different Alex
+                """);
+
+        final Quest quest = setupQuest();
+        new QuestMigration() {
+            @Override
+            public void migrate(final Quest quest) {
+                final MultiConfiguration config = quest.getQuestConfig();
+                replaceStartValueInSection(config, "bar", "oldValue", "newValue");
+                replaceValueInSection(config, "bar", "different", "Bob", "Alex");
+            }
+        }.migrate(quest);
+        quest.saveAll();
+
+        checkAssertion(quest, "package.yml");
+    }
+
     /**
      * Renames a section.
      *
@@ -82,19 +121,7 @@ class QuestMigrationTest extends QuestFixture {
 
         @Override
         public void migrate(final Quest quest) throws InvalidConfigurationException {
-            final MultiConfiguration config = quest.getQuestConfig();
-            final ConfigurationSection staticSection = config.getConfigurationSection(oldPath);
-            final ConfigurationSection source = config.getSourceConfigurationSection(oldPath);
-            if (staticSection == null || source == null) {
-                return;
-            }
-            for (final Map.Entry<String, Object> entry : staticSection.getValues(false).entrySet()) {
-                final String key = entry.getKey();
-                final Object value = entry.getValue();
-                config.set(newPath + "." + key, value);
-            }
-            config.set(oldPath, null);
-            config.associateWith(source);
+            renameSection(quest.getQuestConfig(), oldPath, newPath);
         }
     }
 }

@@ -410,9 +410,9 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
                  "a" -> completeActions(args);
             case "items",
                  "item",
-                 "i" -> completeItems(false, args);
+                 "i" -> completeItems(true, args);
             case "give",
-                 "g" -> completeItems(true, args);
+                 "g" -> completeItems(false, args);
             case "objectives",
                  "objective",
                  "o" -> completeObjectives(args);
@@ -487,7 +487,10 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
                 .getConfigurationSection(type.name().toLowerCase(Locale.ROOT));
         final List<String> completions = new ArrayList<>();
         if (configuration != null) {
-            for (final String key : configuration.getKeys(false)) {
+            for (final String key : configuration.getKeys(type.allowNested)) {
+                if (type.allowNested && configuration.isConfigurationSection(key)) {
+                    continue;
+                }
                 completions.add(pack + Identifier.SEPARATOR + key);
             }
         }
@@ -909,11 +912,11 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
      * Returns a list including all possible options for tab complete of the
      * /betonquest item and /betonquest give commands.
      */
-    private Optional<List<String>> completeItems(final boolean give, final String... args) {
+    private Optional<List<String>> completeItems(final boolean suggestSerializers, final String... args) {
         if (args.length == 2) {
             return completeId(args, AccessorType.ITEMS);
         }
-        if (give && args.length == 3) {
+        if (suggestSerializers && args.length == 3) {
             return Optional.of(List.copyOf(itemTypeRegistry.serializerKeySet()));
         }
         return Optional.of(new ArrayList<>());
@@ -1950,7 +1953,10 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
             final ConfigurationSection configuration = configPack.getConfig().getConfigurationSection("objectives");
             final List<String> completions = new ArrayList<>();
             if (configuration != null) {
-                for (final String key : configuration.getKeys(false)) {
+                for (final String key : configuration.getKeys(true)) {
+                    if (configuration.isConfigurationSection(key)) {
+                        continue;
+                    }
                     final String rawObjectiveInstruction = configuration.getString(key);
                     if (rawObjectiveInstruction != null && rawObjectiveInstruction.stripIndent().startsWith("variable")) {
                         completions.add(pack + Identifier.SEPARATOR + key);
@@ -2026,23 +2032,32 @@ public class QuestCommand implements CommandExecutor, SimpleTabCompleter {
         /**
          * ActionID.
          */
-        ACTIONS,
+        ACTIONS(true),
         /**
          * ConditionID.
          */
-        CONDITIONS,
+        CONDITIONS(true),
         /**
          * ObjectiveID.
          */
-        OBJECTIVES,
+        OBJECTIVES(true),
         /**
          * ItemID.
          */
-        ITEMS,
+        ITEMS(true),
         /**
          * JournalID.
          */
-        JOURNAL
+        JOURNAL(false);
+
+        /**
+         * If the accessor allows nested ids.
+         */
+        private final boolean allowNested;
+
+        AccessorType(final boolean allowNested) {
+            this.allowNested = allowNested;
+        }
     }
 
     /**

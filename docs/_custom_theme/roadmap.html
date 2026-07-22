@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block tabs %}
+
+{{ super() }}
+
+<style>
+  .md-main__inner {
+    margin-top: 0;
+  }
+
+  .md-content__inner {
+    padding-top: 0;
+  }
+
+  .md-content__inner:before {
+    display: none !important;
+  }
+
+  .md-main__inner.md-grid {
+    max-width: 100%;
+  }
+</style>
+
+{% endblock %}
+
+{% block content %}
+{{ page.content }}
+{% endblock %}

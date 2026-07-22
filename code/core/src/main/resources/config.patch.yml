@@ -1,5 +1,5 @@
 # Put patches for BetonQuest's config here. The syntax is documented in the docs/API/Configuration-Files.md
-3.0.0.27:
+3.1.0.4:
   - type: SET
     key: conversation.io.dialog.layout
     value: NPC_TITLE
@@ -21,7 +21,21 @@
   - type: SET
     key: conversation.io.dialog.close-button.close-with-escape
     value: true
-
+3.1.0.3:
+  - type: SET
+    key: conversation.io.menu.base_speed
+    value: false
+3.1.0.2:
+  - type: SET
+    key: hook.thebrewingproject
+    value: true
+3.1.0.1:
+  - type: KEY_RENAME
+    oldKey: language
+    newKey: language.default
+  - type: SET
+    key: language.questlang_whitelist
+    value: [ ]
 3.0.0.26:
   - type: SET
     key: conversation.io.menu.bottom_margin

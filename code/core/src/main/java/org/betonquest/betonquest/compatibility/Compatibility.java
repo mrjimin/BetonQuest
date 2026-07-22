@@ -169,6 +169,11 @@ public class Compatibility implements Listener, FastStatsMetricsProvider {
         }
         map.forEach((name, data) -> logSourceAndCollectHologramIntegrators(data,
                 " from plugin '%s' ".formatted(name), hologramIntegrations));
+
+        if (hologramIntegrations.isEmpty()) {
+            HologramProvider.createDummyProcessors(betonQuestApi);
+            return;
+        }
         try {
             hologramProvider = HologramProvider.init(betonQuestApi, config, hologramIntegrations);
         } catch (final QuestException e) {

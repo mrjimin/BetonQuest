@@ -20,6 +20,8 @@ extra:
       link: https://discord.gg/rK6mfHq
     - icon: brands/opencollective
       link: https://opencollective.com/betonquest
+    - icon: brands/hangar
+      link: https://hangar.papermc.io/BetonQuest/BetonQuest
     - icon: brands/modrinth
       link: https://modrinth.com/plugin/betonquest
     - icon: brands/spigot
@@ -44,27 +46,64 @@ nav:
               - 'Setting up a Test Server': Tutorials/Getting-Started/Setup-Guide/Setting-up-a-Test-Server.md
               - 'Installing BetonQuest': Tutorials/Getting-Started/Setup-Guide/Installing-BetonQuest.md
               - 'Setting up VSCode': Tutorials/Getting-Started/Setup-Guide/Setting-up-VSCode.md
+              - 'VSCode Basics': Tutorials/Getting-Started/Setup-Guide/VSCode-Basics.md
           - 'Basics':
               - 'YAML': Tutorials/Getting-Started/Basics/YAML-Basics.md
               - 'Conversations': Tutorials/Getting-Started/Basics/Conversations.md
-              - '    Actions': Tutorials/Getting-Started/Basics/Actions.md
+              - 'Actions': Tutorials/Getting-Started/Basics/Actions.md
               - 'Objectives': Tutorials/Getting-Started/Basics/Objectives.md
               - 'Conditions': Tutorials/Getting-Started/Basics/Conditions.md
       - 'Features':
           - 'Tracking Quest Progress':
               - 'Overview': Tutorials/Features/Tracking-Quest-Progress/Overview.md
               - 'Tags': Tutorials/Features/Tracking-Quest-Progress/Tags.md
+              - 'Points': Tutorials/Features/Tracking-Quest-Progress/Points.md
+              - 'Stages': Tutorials/Features/Tracking-Quest-Progress/Stages.md
+          - 'Schedules':
+              - 'Overview': Tutorials/Features/Schedules/Overview.md
+              - 'Daily Repetition': Tutorials/Features/Schedules/Daily-Repetition.md
+              - 'Delayed Quest Steps': Tutorials/Features/Schedules/Delayed-Quest-Steps.md
+              - 'Limited Time Events': Tutorials/Features/Schedules/Limited-Time-Events.md
       - 'Tools':
           - 'Handling YAML Errors': Tutorials/Tools/YAML-Errors.md
+          - 'Debugging Quest Logic': Tutorials/Tools/Debugging-Quest-Logic.md
       - 'Syntax':
           - 'Quest Packages': Tutorials/Syntax/Quest-Packages.md
+      - 'Quick Guides':
+          - 'Quest Progress & State':
+              - 'Displaying Progress': Tutorials/Quick-Guides/Quest-Progress-and-State/Displaying-Progress.md
+              - 'Objectives in any Order': Tutorials/Quick-Guides/Quest-Progress-and-State/Objectives-in-any-order.md
+          - 'Player UI & Feedback':
+              - 'Using the Journal': Tutorials/Quick-Guides/Player-UI-and-Feedback/Using-the-Journal.md
+              - 'Using Menus': Tutorials/Quick-Guides/Player-UI-and-Feedback/Using-Menus.md
+              - 'Custom Notifications': Tutorials/Quick-Guides/Player-UI-and-Feedback/Custom-Notifications.md
+              - 'Text Placeholders': Tutorials/Quick-Guides/Player-UI-and-Feedback/Text-Placeholders.md
+              - 'Compass & Navigation Hints': Tutorials/Quick-Guides/Player-UI-and-Feedback/Compass-Navigation-Hint.md
+              - 'Language-Specific Text': Tutorials/Quick-Guides/Player-UI-and-Feedback/Language-Specific-Text.md
+          - 'Quest Flow & Lifecycle':
+              - 'Quest Cancelers': Tutorials/Quick-Guides/Quest-Flow-and-Lifecycle/Using-Quest-Cancelers.md
+              - 'Random Daily Quest': Tutorials/Quick-Guides/Quest-Flow-and-Lifecycle/Random-Daily-Quest.md
+          - 'Rewards & Economy':
+              - 'Rewarding Money': Tutorials/Quick-Guides/Rewards-and-Economy/Rewarding-Money.md
+          - 'Items & Inventory':
+              - 'Complex Quest Items': Tutorials/Quick-Guides/Items-and-Inventory/Complex-Quest-Items.md
+          - 'Multiplayer & Global Quests':
+              - 'Party Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Party-Quests.md
+              - 'Global Daily Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Global-Random-Daily-Quests.md
+              - 'Server Wide Quests': Tutorials/Quick-Guides/Multiplayer-and-Global-Quests/Server-Wide-Quests.md
+          - 'World, NPCs & Visibility':
+              - 'NPC Conversations': Tutorials/Quick-Guides/World-NPCs-and-Visibility/NPC-Conversations.md
+              - 'NPC and Player Hider': Tutorials/Quick-Guides/World-NPCs-and-Visibility/NPC-and-Player-Hider.md
+              - 'Show NPC Holograms': Tutorials/Quick-Guides/World-NPCs-and-Visibility/Show-NPC-Holograms.md
+              - 'WorldGuard Region': Tutorials/Quick-Guides/World-NPCs-and-Visibility/WorldGuard-Region.md
   - 'Documentation':
       - 'Overview': Documentation/Overview.md
 
       - 'Basics':
           - 'About Scripting': Documentation/Basics/About-Scripting.md
+          - 'Scripting Elements': Documentation/Basics/Scripting-Elements.md
           - 'Packages & Templates': Documentation/Basics/Packages-&-Templates.md
-          - 'Quoting & advanced YAML': Documentation/Basics/Quoting-&-YAML.md
+          - 'Quoting & YAML': Documentation/Basics/Quoting-&-YAML.md
 
       - 'Advanced':
           - 'Conversations': Documentation/Advanced/Conversations.md
@@ -78,6 +117,7 @@ nav:
           - 'Quest Cancelers': Documentation/Advanced/Quest-Cancelers.md
           - 'Player Hider': Documentation/Advanced/Player-Hider.md
           - 'Schedules': Documentation/Advanced/Schedules.md
+          - 'Functions': Documentation/Advanced/Functions.md
           - 'Parties': Documentation/Advanced/Parties.md
           - "Notify IO's & Categories": Documentation/Advanced/Notification-IO's-&-Categories.md
           - 'Notification Settings': Documentation/Advanced/Notification-Settings.md
@@ -106,6 +146,7 @@ nav:
                   - 'MMOItems': Documentation/Reference/Integrations-List/Items/MMOItems.md
                   - 'MythicMobs': Documentation/Reference/Integrations-List/Items/MythicMobs.md
                   - 'Nexo': Documentation/Reference/Integrations-List/Items/Nexo.md
+                  - 'TheBrewingProject': Documentation/Reference/Integrations-List/Items/TheBrewingProject.md
               - 'Holograms':
                   - 'Documentation/Reference/Integrations-List/Holograms/index.md'
                   - 'DecentHolograms': Documentation/Reference/Integrations-List/Holograms/DecentHolograms.md
@@ -155,8 +196,8 @@ nav:
               - 'Migration 2.X to 3.X': Documentation/Updates/Migrations/Migration-2-3.md
           - 'Changelog': Documentation/CHANGELOG.md
 
-      - 'Frequently Asked Questions':
-          - 'General FAQ': Documentation/Frequently-Asked-Questions.md
+  - 'Roadmap': Roadmap/index.md
+
   - 'API':
       - 'Overview': API/Overview.md
       - 'Obtaining API': API/Obtaining-API.md
@@ -180,6 +221,7 @@ nav:
           - 'Versioning': API/Tools/Versioning.md
           - 'Configuration Accessor': API/Configuration-Files.md
           - 'Bukkit Configurations': API/BukkitConfigurations.md
+          - 'Functions': API/Tools/Functions.md
       - 'Legacy':
           - 'Writing Implementations': API/Legacy/Writing-Implementations.md
           - 'Schedules': API/Legacy/Schedules.md

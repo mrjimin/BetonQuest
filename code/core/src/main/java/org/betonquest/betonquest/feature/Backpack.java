@@ -119,10 +119,10 @@ public class Backpack implements Listener {
      * @param type              type of the display
      */
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public Backpack(final Plugin plugin, final BetonQuestLogger log, final PlayerData playerData,
+    public Backpack(final Plugin plugin, final BetonQuestLogger log, final ConfigAccessor config,
                     final CancelerProcessor cancelerProcessor, final CompassManager compassManager,
-                    final ConfigAccessor config, final Localizations localizations, final OnlineProfile onlineProfile,
-                    final ItemManager itemManager, final Identifiers identifiers, final DisplayType type) {
+                    final ItemManager itemManager, final Identifiers identifiers, final Localizations localizations,
+                    final OnlineProfile onlineProfile, final PlayerData playerData, final DisplayType type) {
         this.plugin = plugin;
         this.cancelerProcessor = cancelerProcessor;
         this.compassManager = compassManager;
@@ -138,29 +138,6 @@ public class Backpack implements Listener {
             case CANCEL -> new Cancelers();
             case COMPASS -> new Compass();
         };
-    }
-
-    /**
-     * Creates new backpack GUI.
-     *
-     * @param plugin            the plugin instance
-     * @param betonQuestLogger  the BetonQuest logger
-     * @param playerData        the storage handler for the player data
-     * @param cancelerProcessor the {@link CancelerProcessor} to access the cancelers
-     * @param compassManager    the {@link CompassManager} to access the compass targets
-     * @param itemManager       the {@link ItemManager} to access the items
-     * @param config            the plugin configuration file
-     * @param localizations     the {@link Localizations} instance
-     * @param identifiers       the identifier factory
-     * @param onlineProfile     the {@link OnlineProfile} of the player
-     */
-    @SuppressWarnings("PMD.ExcessiveParameterList")
-    public Backpack(final Plugin plugin, final BetonQuestLogger betonQuestLogger, final PlayerData playerData,
-                    final CancelerProcessor cancelerProcessor, final CompassManager compassManager,
-                    final ItemManager itemManager, final ConfigAccessor config, final Localizations localizations,
-                    final Identifiers identifiers, final OnlineProfile onlineProfile) {
-        this(plugin, betonQuestLogger, playerData, cancelerProcessor, compassManager, config, localizations,
-                onlineProfile, itemManager, identifiers, DisplayType.DEFAULT);
     }
 
     /**

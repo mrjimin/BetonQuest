@@ -5,6 +5,29 @@ icon: material/book-open-variant-outline
 
 This is the definition encyclopedia. All important and regularly used keywords are defined here.
 
+## Character Semantics
+
+A list of all characters that are used in the BetonQuest language.
+Each character's semantics are highly dependent on the context.
+    
+| Symbol              | Example                      | Context                     | Reference                                         |
+|---------------------|------------------------------|-----------------------------|---------------------------------------------------|
+| `@`                 | `@[legacy]`                  | text messages               | [Text Formatting](../Advanced/Text-Formatting.md) |
+| `^`                 | `run ^burn ^kill`            | special action syntax       | [Run](Actions-List.md#run)                        |
+| `:`                 | `param:value`                | parameters                  | [Parameter Types](#parameter-type)                |
+| `,`                 | `3,6,9,14`                   | lists of values             |                                                   |
+| `!`                 | `!hasTag`                    | condition negation          |                                                   |
+| `>`                 | `package>identifier`         | package-identifer separator |                                                   |
+| `-`                 | `package-sub>identifier`     | package path separator      |                                                   |
+| `%`                 | `%location%`                 | placeholder brackets        |                                                   |
+| `.`                 | `%foo.bar%`                  | sub addressing placeholder  |                                                   |
+| `.`                 | `convo.sub`                  | sub addressing conversation |                                                   |
+| <code>&#124;</code> | <code>sudo x &#124; y</code> | special action syntax       | [Sudo](Actions-List.md#sudo)                      |
+| `+`                 | `+param:value`               | additional parameters       | [Parameter Types](#syntax)                        |
+| `"`                 | `"Some text"`                | quoting syntax              |                                                   |
+| `~`                 | `0.5~action2`                | special action syntax       | [PickRandom](Actions-List.md#pickrandom)          |
+| `_`                 | `_-parent>identifier`        | package parent accessor     |                                                   |
+
 ## Data Types
 
 A list of all data types that require a special and more elaborate explanation.
@@ -64,6 +87,33 @@ A list of all data types that require a special and more elaborate explanation.
     A regex is allowed in any block state value when the block selector is used to **match** blocks.
     You cannot use a regex in block states when the block selector is used for **placing** blocks.
 
+### Identifiers
+
+!!! info "Identifier"
+
+    Identifiers are used to identify elements in packages. 
+    They are usually defined as relative paths and consist of two parts:
+    
+    - An optional `package` path
+    - An `identifier` uniquely identifying the element within the package
+    
+    The path is separated by a `>` character from the identifier if the package is defined.  
+    More information:
+     
+    - [package paths](../Basics/Packages-&-Templates.md) 
+    - [identifier subsections](../Basics/About-Scripting.md#subsections).
+
+    **Examples:**
+    
+    - `identifier`
+    - `identifier.subsection`
+    - `package>identifier`
+    - `package-subpackage>identifier`
+    - `_-package>identifier`
+    - `_-package-subpackage>identifier.subsection`
+    
+    
+
 ### Regular Expressions
 
 !!! info "Regular Expression"
@@ -87,6 +137,23 @@ A list of all data types that require a special and more elaborate explanation.
     | Positive numbers only                                         | `^\d+$`                  |
     | Negative numbers only                                         | `^-\d+$`                 |
     | Any number                                                    | `[-+]?[0-9]+(\.[0-9]+)?` |
+
+### Time Unit
+
+!!! info "Time Unit"
+
+    Time units are used to define durations from raw numbers.
+    In [Elements](#elements) they usually get their own optional argument.
+    BetonQuest supports the following time units _case insensitive_ and with a fixed rate:
+    
+    - `ticks`: Smallest common time unit for minecraft.
+    - `seconds`: 20 ticks = 1 second.
+    - `minutes`: 60 seconds = 1 minute.
+    - `hours`: 60 minutes = 1 hour.
+    - `days`: 24 hours = 1 day.
+    - `weeks`: 7 days = 1 week.
+    - `months`: 30 days = 1 month.
+    - `years`: 365 days = 1 year.
 
 ### Unified Location Format
 
@@ -118,6 +185,10 @@ A list of all data types that require a special and more elaborate explanation.
 ## Elements
 
 All actions, conditions, etc. - essentially anything definable under a specific section in the script - are considered elements.
+
+### Element Types
+
+_tbd_
 
 ### Context
 

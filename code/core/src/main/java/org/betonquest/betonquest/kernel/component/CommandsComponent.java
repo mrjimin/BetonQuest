@@ -27,6 +27,7 @@ import org.betonquest.betonquest.database.Connector;
 import org.betonquest.betonquest.database.GlobalData;
 import org.betonquest.betonquest.database.PlayerDataFactory;
 import org.betonquest.betonquest.database.Saver;
+import org.betonquest.betonquest.feature.BackpackFactory;
 import org.betonquest.betonquest.kernel.processor.feature.CancelerProcessor;
 import org.betonquest.betonquest.kernel.processor.feature.JournalEntryProcessor;
 import org.betonquest.betonquest.kernel.registry.feature.ItemTypeRegistry;
@@ -105,16 +106,13 @@ public class CommandsComponent extends AbstractCoreComponent {
         javaPlugin.getCommand("betonquest").setExecutor(questCommand);
         javaPlugin.getCommand("betonquest").setTabCompleter(questCommand);
         javaPlugin.getCommand("journal").setExecutor(new JournalCommand(playerDataStorage, profileProvider));
-        javaPlugin.getCommand("backpack").setExecutor(new BackpackCommand(javaPlugin, loggerFactory, loggerFactory.create(BackpackCommand.class),
-                config, localizations, profileProvider, playerDataStorage, cancelerProcessor,
-                compassManager, itemManager, identifiers));
-        javaPlugin.getCommand("cancelquest").setExecutor(new CancelQuestCommand(javaPlugin, config, localizations, profileProvider,
-                loggerFactory, playerDataStorage, cancelerProcessor, compassManager,
-                identifiers, itemManager));
-        javaPlugin.getCommand("compass").setExecutor(new CompassCommand(javaPlugin, loggerFactory,
-                config, localizations, profileProvider, playerDataStorage, cancelerProcessor,
-                compassManager, itemManager, identifiers));
-        final LangCommand langCommand = new LangCommand(loggerFactory.create(LangCommand.class), playerDataStorage, localizations, profileProvider, languageProvider);
+        final BackpackFactory backpackFactory = new BackpackFactory(javaPlugin, loggerFactory, config, playerDataStorage,
+                cancelerProcessor, compassManager, itemManager, identifiers, localizations);
+        javaPlugin.getCommand("backpack").setExecutor(new BackpackCommand(loggerFactory.create(BackpackCommand.class),
+                profileProvider, backpackFactory));
+        javaPlugin.getCommand("cancelquest").setExecutor(new CancelQuestCommand(profileProvider, backpackFactory));
+        javaPlugin.getCommand("compass").setExecutor(new CompassCommand(profileProvider, backpackFactory));
+        final LangCommand langCommand = new LangCommand(loggerFactory.create(LangCommand.class), playerDataStorage, localizations, profileProvider, languageProvider, config);
         javaPlugin.getCommand("questlang").setExecutor(langCommand);
         javaPlugin.getCommand("questlang").setTabCompleter(langCommand);
         javaPlugin.getCommand("betonquestanswer").setTabCompleter((sender, command, label, args) -> List.of());

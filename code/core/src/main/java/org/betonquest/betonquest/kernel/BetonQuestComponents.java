@@ -21,6 +21,7 @@ import org.betonquest.betonquest.kernel.component.DatabaseComponent;
 import org.betonquest.betonquest.kernel.component.ExecutionCacheComponent;
 import org.betonquest.betonquest.kernel.component.FastStatsMetricsComponent;
 import org.betonquest.betonquest.kernel.component.FontRegistryComponent;
+import org.betonquest.betonquest.kernel.component.FunctionsComponent;
 import org.betonquest.betonquest.kernel.component.GlobalDataComponent;
 import org.betonquest.betonquest.kernel.component.IdentifiersComponent;
 import org.betonquest.betonquest.kernel.component.InstructionsComponent;
@@ -47,6 +48,7 @@ import org.betonquest.betonquest.kernel.component.QuestPackageManagerComponent;
 import org.betonquest.betonquest.kernel.component.RPGMenuComponent;
 import org.betonquest.betonquest.kernel.component.ReloaderComponent;
 import org.betonquest.betonquest.kernel.component.SchedulesComponent;
+import org.betonquest.betonquest.kernel.component.SubRoutinesComponent;
 import org.betonquest.betonquest.kernel.component.TextParserComponent;
 import org.betonquest.betonquest.kernel.component.TextSectionParserComponent;
 import org.betonquest.betonquest.kernel.component.UpdaterComponent;
@@ -123,7 +125,8 @@ public final class BetonQuestComponents {
                 new SchedulesComponent(),
                 new NotificationsComponent(),
                 new NotificationCategoriesComponent(),
-                new RPGMenuComponent()
+                new RPGMenuComponent(),
+                new FunctionsComponent()
         );
     }
 
@@ -166,7 +169,8 @@ public final class BetonQuestComponents {
                 new ItemTypesComponent(),
                 new NotifyIOTypesComponent(),
                 new ScheduleTypesComponent(),
-                new TextParserTypesComponent()
+                new TextParserTypesComponent(),
+                new SubRoutinesComponent()
         );
     }
 }

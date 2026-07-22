@@ -5,13 +5,6 @@ icon: octicons/tasklist-16
 The configuration of BetonQuest is mainly done in the "_config.yml_" file. All of its options are described on this page.
 There is also additional information about backups, updates, and database transfers. 
 
-## `language` - Default plugin language
-The language option sets the default language of BetonQuest.  
-It is used for all players that do not have a specific language set or as fallback language just in case.  
-You can see all available languages in the `lang` folder, and you can add your own language files there.
-The language consists of a 2 to 3 character language key (a-z in lowercase), followed by a dash and at least
-2 characters from a-z, A-Z, numbers and dashes. 
-
 ## `text_parser` - Default text parser
 Set the default parser used to format all text in betonquest.
 For more information, see the [Text Formatting](../Advanced/Text-Formatting.md) page.
@@ -109,6 +102,21 @@ Currently, there is no way to switch between profiles, as the feature is still i
 
 * `initial_name` - The name of the profile that is created when a player joins for the first time.
 
+## `language` - Language settings
+`language` section controls the languages BetonQuest uses.
+
+### `language.default` - Default plugin language
+Sets the default language of BetonQuest.  
+It is used for all players that do not have a specific language set, or as a fallback language just in case.  
+You can see all available languages in the `lang` folder, and you can add your own language files there.
+The language consists of a 2 to 3 character language key (a-z in lowercase), followed by a dash and at least
+2 characters from a-z, A-Z, numbers and dashes.
+
+### `language.questlang_whitelist` - Selectable languages
+A list of languages that players are allowed to choose with the `/questlang` command.  
+Leave it empty (`[]`) to allow every loaded language. If the list is not empty, only the listed languages
+are offered as tab-completions and can be selected; any other language is treated as if it does not exist.
+
 ## `conversation` - Conversation settings
 All conversation related settings.
 
@@ -163,6 +171,7 @@ Every io has its own settings that can be configured in the `io` section.
       refresh_delay: 180    #(5)!
       rate_limit: 10        #(6)!
       set_speed: true       #(7)!
+      base_speed: false     #(24)!
   
       npc_name_type: chat              #(8)!
       npc_name_align: center           #(9)!
@@ -208,6 +217,8 @@ Every io has its own settings that can be configured in the `io` section.
     21. A prefix that gets applied to the start of a new line if the actual text is too long.
     22. The arrow format to scroll up.
     23. The arrow format to scroll down.
+    24. Requires `set_speed: true`. If set to `true`, the base movement speed is directly reduced to 0 instead using a
+        temporary modifier for that. However, in case of a server crash during a conversation, this change might persist.
   
 
 * `chest`  

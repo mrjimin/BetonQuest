@@ -5,18 +5,18 @@ import org.betonquest.betonquest.api.BetonQuestApi;
 import org.betonquest.betonquest.api.QuestException;
 import org.betonquest.betonquest.api.config.ConfigAccessor;
 import org.betonquest.betonquest.api.config.quest.QuestPackage;
+import org.betonquest.betonquest.api.dependency.CoreComponentLoader;
+import org.betonquest.betonquest.api.identifier.Identifier;
 import org.betonquest.betonquest.api.identifier.IdentifierFactory;
+import org.betonquest.betonquest.api.logger.BetonQuestLogger;
 import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
-import org.betonquest.betonquest.api.profile.ProfileProvider;
 import org.betonquest.betonquest.api.reload.ReloadPhase;
 import org.betonquest.betonquest.api.text.TextParser;
 import org.betonquest.betonquest.database.Connector;
 import org.betonquest.betonquest.kernel.ProcessorDataLoader;
+import org.betonquest.betonquest.kernel.processor.QuestProcessor;
 import org.bukkit.Location;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.HandlerList;
 
 import java.util.Comparator;
 import java.util.List;
@@ -46,6 +46,11 @@ public final class HologramProvider {
      * The current {@link NpcHologramLoop}.
      */
     private NpcHologramLoop npcHologramLoop;
+
+    /**
+     * The current listener.
+     */
+    private HologramListener listener;
 
     private HologramProvider(final BetonQuestApi betonQuestApi, final ConfigAccessor config, final BetonHologramFactory integration) {
         this.hologramFactory = integration;
@@ -92,6 +97,18 @@ public final class HologramProvider {
     }
 
     /**
+     * Registers dummy processors that warn when trying to load holograms without a provider.
+     *
+     * @param betonQuestApi the {@link BetonQuestApi} instance providing access to BetonQuest's API
+     */
+    public static void createDummyProcessors(final BetonQuestApi betonQuestApi) {
+        final ProcessorDataLoader processorDataLoader = BetonQuest.getInstance().getComponentLoader().get(ProcessorDataLoader.class);
+        final BetonQuestLogger logger = betonQuestApi.loggerFactory().create(HologramProvider.class);
+        processorDataLoader.addProcessor(new ThrowingQuestProcessor(logger, "Hologram", "holograms"));
+        processorDataLoader.addProcessor(new ThrowingQuestProcessor(logger, "NPC Hologram", "npc_holograms"));
+    }
+
+    /**
      * Creates a wrapped hologram using a hooked hologram plugin.
      *
      * @param location Location of where the hologram should be spawned.
@@ -114,22 +131,23 @@ public final class HologramProvider {
     }
 
     private void load(final BetonQuestApi api, final ConfigAccessor config) {
-        final BetonQuest plugin = BetonQuest.getInstance();
+        final CoreComponentLoader componentLoader = BetonQuest.getInstance().getComponentLoader();
         final BetonQuestLoggerFactory loggerFactory = api.loggerFactory();
-        final TextParser textParser = plugin.getComponentLoader().get(TextParser.class);
-        final Connector connector = plugin.getComponentLoader().get(Connector.class);
-        final ProcessorDataLoader processorDataLoader = plugin.getComponentLoader().get(ProcessorDataLoader.class);
+        final TextParser textParser = componentLoader.get(TextParser.class);
+        final Connector connector = componentLoader.get(Connector.class);
+        final ProcessorDataLoader processorDataLoader = componentLoader.get(ProcessorDataLoader.class);
         final IdentifierFactory<HologramIdentifier> hologramIdentifierFactory = new HologramIdentifierFactory(api.packages());
         api.identifiers().register(HologramIdentifier.class, hologramIdentifierFactory);
         this.locationHologramLoop = new LocationHologramLoop(loggerFactory, loggerFactory.create(LocationHologramLoop.class),
                 connector, api.instructions(), hologramIdentifierFactory, config,
-                this, plugin, textParser, api.conditions().manager(), api.profiles());
+                this, api.bukkit().plugin(), textParser, api.conditions().manager(), api.profiles());
         processorDataLoader.addProcessor(locationHologramLoop);
         this.npcHologramLoop = new NpcHologramLoop(loggerFactory, loggerFactory.create(NpcHologramLoop.class),
-                connector, api.instructions(), plugin, this, config,
+                connector, api.instructions(), api.bukkit().plugin(), this, config,
                 hologramIdentifierFactory, api.conditions().manager(), api.npcs().manager(), api.npcs().registry(), textParser, api.profiles());
         processorDataLoader.addProcessor(npcHologramLoop);
-        api.bukkit().registerEvents(new HologramListener(api.profiles()));
+        this.listener = new HologramListener(api.profiles(), npcHologramLoop);
+        api.bukkit().registerEvents(listener);
         api.reloader().register(ReloadPhase.INTEGRATION, HologramRunner::cancel);
     }
 
@@ -140,45 +158,26 @@ public final class HologramProvider {
         HologramRunner.cancel();
         locationHologramLoop.clear();
         npcHologramLoop.close();
+        HandlerList.unregisterAll(listener);
     }
 
     /**
-     * A listener class for bukkit events that holograms use.
+     * QuestProcessor to warn when a hologram section is found but no integration is loaded.
      */
-    public static class HologramListener implements Listener {
+    private static final class ThrowingQuestProcessor extends QuestProcessor<Identifier, Object> {
 
-        /**
-         * The profile provider instance.
-         */
-        private final ProfileProvider profileProvider;
-
-        /**
-         * Creates a new HologramListener.
-         *
-         * @param profileProvider the profile provider instance
-         */
-        public HologramListener(final ProfileProvider profileProvider) {
-            this.profileProvider = profileProvider;
+        private ThrowingQuestProcessor(final BetonQuestLogger log, final String readable, final String internal) {
+            super(log, (source, input) -> {
+                throw new QuestException("Dummy factory");
+            }, readable, internal);
         }
 
-        /**
-         * Refreshes Holograms when a player joins the server.
-         *
-         * @param event The event.
-         */
-        @EventHandler
-        public void onPlayerJoin(final PlayerJoinEvent event) {
-            HologramRunner.refresh(profileProvider.getProfile(event.getPlayer()));
-        }
-
-        /**
-         * Refreshes Holograms when a player leaves the server.
-         *
-         * @param event The event.
-         */
-        @EventHandler
-        public void onPlayerQuit(final PlayerQuitEvent event) {
-            HologramRunner.remove(event.getPlayer());
+        @Override
+        public void load(final QuestPackage pack) {
+            if (pack.getConfig().isConfigurationSection(internal)) {
+                log.warn("Tried to load section '%s' in pack '%s', but there is no hologram integration loaded!"
+                        .formatted(internal, pack.getQuestPath()));
+            }
         }
     }
 }

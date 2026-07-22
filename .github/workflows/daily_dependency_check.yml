@@ -2,6 +2,7 @@ name: Daily Dependency Check
 on:
   schedule:
     - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   code:
@@ -11,12 +12,12 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: BetonQuest/Workflows/.github/actions/setup-java-maven@main
         with:
           JAVA_OVERRIDE_SETTINGS: 'false'
           MAVEN_WRAPPER_DIR: '~/.m2/wrapper'
-          JAVA_OVERRIDE: 21
+          JAVA_OVERRIDE: 25
       - name: Build with Maven
         run: |
           ./mvnw -P Test-All -B package -DskipProjectSettings=true
@@ -28,7 +29,7 @@ jobs:
 
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: BetonQuest/Workflows/.github/actions/setup-git-lfs@main
       - uses: BetonQuest/Workflows/.github/actions/setup-mkdocs-material@main
       - name: Build with mkdocs
@@ -43,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Publish to Discord
         if: "always() && github.repository == 'BetonQuest/BetonQuest'"
         run: |

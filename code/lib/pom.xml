@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.betonquest</groupId>
     <artifactId>parent</artifactId>
-    <version>2.10.0</version>
+    <version>2.11.0</version>
   </parent>
 
   <name>BetonQuest Library</name>
@@ -16,11 +16,11 @@
   <description>Provides the library of BetonQuest</description>
 
   <properties>
-    <revision>3.0.0</revision>
+    <revision>3.1.0</revision>
     <changelist>-SNAPSHOT</changelist>
 
     <!-- module versions -->
-    <betonquest.api.version>3.0.0${changelist}</betonquest.api.version>
+    <betonquest.api.version>3.1.0${changelist}</betonquest.api.version>
 
     <!-- dependency versions -->
     <paper-api.version>1.18.2-R0.1-SNAPSHOT</paper-api.version>

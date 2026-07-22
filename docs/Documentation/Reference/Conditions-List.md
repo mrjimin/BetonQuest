@@ -225,6 +225,27 @@ conditions:
   isFlying: "fly"
 ```
 
+## `Function`
+
+__Context__: @snippet:condition-meta:independent@  
+__Syntax__: `function <function> <arguments>`  
+__Description__: Whether the specified function called with the specified arguments resolves to true.
+
+See [Functions](../Advanced/Functions.md) for more information about defining functions.
+See [Value Interpretation](../Advanced/Functions.md#value-interpretation) for more information about how the results of functions are interpreted.
+
+| Parameter                 | Type     | Explanation                                    |
+|---------------------------|----------|------------------------------------------------|
+| function<br>[Identifier]  | Required | The function to evaluate.                      |
+| arguments<br>List[String] | Required | The list of arguments to pass to the function. |
+
+```YAML title="Example"
+conditions:
+  myFunction: "function reward %point.reputation.amount%,15,%tag.questCompleted%"
+functions:
+  reward: 'b(reputation,reqRep,completed) = completed & reputation > reqRep'
+```
+
 ## `Gamemode`
 
 __Context__: @snippet:condition-meta:online@  

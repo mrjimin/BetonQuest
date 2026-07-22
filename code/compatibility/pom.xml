@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.betonquest</groupId>
     <artifactId>parent</artifactId>
-    <version>2.10.0</version>
+    <version>2.11.0</version>
   </parent>
 
   <name>BetonQuest Compatibility</name>
@@ -16,19 +16,19 @@
   <description>Provides the 3rd-party Compatibility of BetonQuest</description>
 
   <properties>
-    <revision>3.0.0</revision>
+    <revision>3.2.0</revision>
     <changelist>-SNAPSHOT</changelist>
     <pit.report.skip>true</pit.report.skip>
 
     <!-- module versions -->
-    <betonquest.core.version>3.0.0${changelist}</betonquest.core.version>
+    <betonquest.core.version>3.2.0${changelist}</betonquest.core.version>
 
     <!-- dependency versions -->
     <paper-api.version>1.18.2-R0.1-SNAPSHOT</paper-api.version>
-    <worldguard-bukkit.version>7.0.9</worldguard-bukkit.version>
-    <worldguard-core.version>7.0.9</worldguard-core.version>
-    <worldedit-bukkit.version>7.3.0</worldedit-bukkit.version>
-    <worldedit-core.version>7.3.0</worldedit-core.version>
+    <worldguard-bukkit.version>7.0.16</worldguard-bukkit.version>
+    <worldguard-core.version>7.0.16</worldguard-core.version>
+    <worldedit-bukkit.version>7.3.19</worldedit-bukkit.version>
+    <worldedit-core.version>7.3.19</worldedit-core.version>
     <Heroes.version>1.10.7-RELEASE</Heroes.version>
     <Mythic-Dist.version>5.7.2</Mythic-Dist.version>
     <MythicLib-dist.version>1.7.1-SNAPSHOT</MythicLib-dist.version>
@@ -62,6 +62,7 @@
     <craft-engine-core.version>26.5</craft-engine-core.version>
     <craft-engine-bukkit.version>26.5</craft-engine-bukkit.version>
     <api-itemsadder.version>4.0.10</api-itemsadder.version>
+    <thebrewingproject-bukkit.version>3.3.0</thebrewingproject-bukkit.version>
   </properties>
 
   <dependencies>
@@ -328,6 +329,15 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- from breweryteam repository -->
+    <dependency>
+      <groupId>dev.jsinco.brewery</groupId>
+      <artifactId>thebrewingproject-bukkit</artifactId>
+      <version>${thebrewingproject-bukkit.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
     <!-- from matteodev repository -->
     <dependency>
       <groupId>dev.lone</groupId>
@@ -506,6 +516,10 @@
     <repository>
       <id>betonquest-matteodev-repo</id>
       <url>https://maven.devs.beer/</url>
+    </repository>
+    <repository>
+      <id>betonquest-breweryteam-repo</id>
+      <url>https://repo.breweryteam.dev/releases</url>
     </repository>
     <repository>
       <id>maven_central</id>

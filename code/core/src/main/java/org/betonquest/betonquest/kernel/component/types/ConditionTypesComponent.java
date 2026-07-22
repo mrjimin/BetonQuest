@@ -7,6 +7,7 @@ import org.betonquest.betonquest.api.logger.BetonQuestLoggerFactory;
 import org.betonquest.betonquest.api.profile.ProfileProvider;
 import org.betonquest.betonquest.api.service.condition.ConditionManager;
 import org.betonquest.betonquest.api.service.conversation.Conversations;
+import org.betonquest.betonquest.api.service.function.Functions;
 import org.betonquest.betonquest.api.service.instruction.Instructions;
 import org.betonquest.betonquest.api.service.npc.NpcManager;
 import org.betonquest.betonquest.api.service.objective.ObjectiveManager;
@@ -30,6 +31,7 @@ import org.betonquest.betonquest.quest.condition.eval.EvalConditionFactory;
 import org.betonquest.betonquest.quest.condition.experience.ExperienceConditionFactory;
 import org.betonquest.betonquest.quest.condition.facing.FacingConditionFactory;
 import org.betonquest.betonquest.quest.condition.flying.FlyingConditionFactory;
+import org.betonquest.betonquest.quest.condition.function.FunctionConditionFactory;
 import org.betonquest.betonquest.quest.condition.gamemode.GameModeConditionFactory;
 import org.betonquest.betonquest.quest.condition.hand.HandConditionFactory;
 import org.betonquest.betonquest.quest.condition.health.HealthConditionFactory;
@@ -92,7 +94,7 @@ public class ConditionTypesComponent extends AbstractCoreComponent {
                 BetonQuestLoggerFactory.class, ProfileProvider.class, GlobalData.class, PlayerDataStorage.class,
                 Localizations.class, LanguageProvider.class, Instructions.class,
                 ConditionTypeRegistry.class, Conversations.class, ConditionManager.class, ObjectiveManager.class,
-                NpcManager.class);
+                NpcManager.class, Functions.class);
     }
 
     @Override
@@ -111,6 +113,7 @@ public class ConditionTypesComponent extends AbstractCoreComponent {
         final ConditionManager conditionManager = getDependency(ConditionManager.class);
         final ObjectiveManager objectiveManager = getDependency(ObjectiveManager.class);
         final NpcManager npcManager = getDependency(NpcManager.class);
+        final Functions functions = getDependency(Functions.class);
 
         conditionTypes.register("advancement", new AdvancementConditionFactory(server));
         conditionTypes.registerCombined("and", new ConjunctionConditionFactory(conditionManager));
@@ -128,6 +131,7 @@ public class ConditionTypesComponent extends AbstractCoreComponent {
         conditionTypes.register("experience", new ExperienceConditionFactory());
         conditionTypes.register("facing", new FacingConditionFactory());
         conditionTypes.register("fly", new FlyingConditionFactory());
+        conditionTypes.registerCombined("function", new FunctionConditionFactory(functions));
         conditionTypes.register("gamemode", new GameModeConditionFactory());
         conditionTypes.registerCombined("globalpoint", new GlobalPointConditionFactory(globalData));
         conditionTypes.register("globaltag", new GlobalTagConditionFactory(globalData));

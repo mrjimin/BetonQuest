@@ -10,26 +10,46 @@ search:
 ## `Burn`
 
 __Context__: @snippet:action-meta:online@  
-__Syntax__: `burn <duration>`  
+__Syntax__: `burn <duration> [unit]`  
 __Description__: Ignite the player for the specified duration.
 
-| Parameter  | Syntax            | Default Value          | Explanation                                     |
-|------------|-------------------|------------------------|-------------------------------------------------|
-| _duration_ | `duration:number` | :octicons-x-circle-16: | The duration the player will burn (in seconds). |
+| Parameter            | Type                  | Explanation                                        |
+|----------------------|-----------------------|----------------------------------------------------|
+| duration<br>[Number] | Required              | The duration the player will burn.                 |
+| unit<br>[TimeUnit]   | Optional<br>[seconds] | The unit of the duration time. Default is seconds. |
 
 ```YAML title="Example"
 actions:
-  burn: "burn duration:4"
-  punishing_fire: "burn duration:%point.punishment.amount%"
+  burn: "burn 30 unit:ticks"
+  punishing_fire: "burn %point.punishment.amount%"
 ```
 
-@snippet:actions:cancel@
+## `Cancel`
+
+__Context__: @snippet:action-meta:online@  
+__Syntax__: `cancel <canceler> {bypass}`  
+__Description__: Call the specified quest canceler.
+
+This action works in the same way as a [quest canceler in the backpack](../Advanced/Quest-Cancelers.md).
+Running this action is equal to the player canceling a quest using the backpack.
+
+| Parameter                                                            | Type                  | Explanation                                                                                                                   |
+|----------------------------------------------------------------------|-----------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| canceler<br>[[Identifier]](./Definition-Encyclopedia.md#identifiers) | Required              | The identifier of the quest canceler to execute.                                                                              |
+| bypass<br>[Boolean]                                                  | Flag<br>[false, true] | If the canceler conditions should be ignored. If enabled the canceler will be executed, even when its conditions are not met. |
+
+```YAML title="Example"
+actions:
+  cancelSmallQuest: "cancel smallQuest"
+  cancelWoodQuest: "cancel woodQuest bypass"
+  cancelWaterQuest: "cancel _-package>waterQuest bypass:%tag.startedWaterQuest%"
+```
 
 ## `CancelConversation`
 
 __Context__: @snippet:action-meta:online@  
 __Syntax__: `cancelconversation`  
-__Description__: Cancel a conversation that is currently active for the player.
+__Description__: Cancel the conversation that is currently active for the player.
 
 ```YAML title="Example"
 actions:
@@ -60,6 +80,10 @@ actions:
 __Context__: @snippet:action-meta:independent@  
 __Syntax__: `chestclear <location>`  
 __Description__: Remove all items from the chest at the specified location.
+
+| Parameter                                                                      | Type     | Explanation                                                                                                                              |
+|--------------------------------------------------------------------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------|
+| location<br>[[Location]](./Definition-Encyclopedia.md#unified-location-format) | Required | The location of the chest to be cleared. In case there is no chest at the given location or it could not be cleared, an error is thrown. |
 
 ```YAML title="Example"
 actions:
@@ -473,6 +497,30 @@ actions:
   setNpcsAggressive: "globaltag add global_areNPCsAggressive"
 ```
 
+## `Heal`
+
+__Context__: @snippet:action-meta:online@  
+__Syntax__: `heal <amount> [operation]`  
+__Description__: Heal the player for the specified amount.
+
+Use `operation:set` to set the health to a specific amount instead of adding to it.
+The health of the player will never be less than 0 or more than the maximum health and will be cropped to match that.
+While technically possible, instead of using a negative amount you should consider using the [`damage` action](#damage).
+Using negative amounts will skip the damage animation and any related effects.
+
+| Parameter               | Type              | Explanation                   |
+|-------------------------|-------------------|-------------------------------|
+| amount<br>[Number]      | Required          | The amount of health to heal. |
+| operation<br>[HealType] | Optional<br>[add] | The operation to perform.     |
+
+```YAML title="Example"
+actions:
+  give5: "heal 5"
+  set20: "heal 20 operation:set"
+```
+
+*[HealType]: add, set
+
 ## `Hunger`
 
 __Context__: @snippet:action-meta:online@  
@@ -620,9 +668,82 @@ actions:
     debug: "log daily quests have been reset level:DEBUG "
 ```
 
-@snippet:actions:notify@
+## `Notify`
 
-@snippet:actions:notify-all@
+__Context__: @snippet:action-meta:online@  
+__Syntax__: `notify <message> [category] [io] [any io specific settings]`  
+__Description__: Send the notification to the player using the specified notifyIO.
+
+Every notify IO has it's own specific settings. You must understand these too if you want to use the Notify system to it's full extend.
+Advanced users may also use [Notify Categories](../Advanced/Notification-IO's-&-Categories.md#categories) to make their lives easier.
+
+Also a language can be defined with a language key from the language folder in the format `{Lang-Key}`.
+Any text after the language key until the next language key belongs to the specified language.
+There must be a space between the language key and the message.
+In this example, english users would see `ABC` and german ones would see `DEF`.
+
+!!! warning
+    All colons (`:`) in the message part of the notification need to be escaped, including those inside placeholders.
+    One backslash (`\`) is required when using no quoting at all (`...`) or single quotes
+    (`'...'`). Two backslashes are required (`\\`) when using double quotes (`"..."`).  
+    You also need to escape the backslash itself, if you use double quotes for some things like `\n`.
+
+    Examples:<br>
+    `actionName: notify Peter:Heya %player%!` :arrow_right: `actionName: notify Peter{++\++}:Heya %player%!`<br>
+    `actionName: {=='==}notify Peter:Heya %player%!{=='==}` :arrow_right: `actionName: {=='==}notify Peter{++\++}:Heya %player%!{=='==}`<br>
+    `actionName: {=="==}notify Peter:Heya %player%!{=="==}` :arrow_right: `actionName: {=="==}notify Peter{++\\++}:Heya %player%!{=="==}`<br>
+    `otherAction: notify You own %math.calc:5% fish!` :arrow_right: `otherAction: You own %math.calc{++\++}:5% fish!`<br>
+    `newLine: {=="==}notify Some multiline \n message{=="==}` :arrow_right: `newLine: {=="==}notify Some multiline {++\++}\n message{=="==}`
+
+| Parameter                  | Syntax                | Default Value          | Explanation                                                                                                                      |
+|----------------------------|-----------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| _message_                  | Any text with spaces! | :octicons-x-circle-16: | The message that will be displayed. Supports translations. *Must be first*                                                       |
+| _category_                 | `category:info`       | None                   | Will load all settings from that Notification Category. Can be a comma-separated list. The first existent category will be used. |
+| _io_                       | `io:bossbar`          | io:chat                | Any NotifyIO Overrides the "category". settings.                                                                                 |
+| _any io specific settings_ | `setting:value`       | None                   | Some notifyIO's provide specific settings. Can be used multiple times. Overrides the "category" settings.                        |
+
+```YAML title="Example"
+actions:
+  #The simplest of all notify actions. Just a chat message:
+  customAction: "notify Hello %player%!"  
+
+  #It's the same as this one since 'chat' is the default IO.
+  theSame: "notify Hello %player%! io:chat"
+
+  #This one displays a title and a subtitle:
+  myTitle: "notify This is a title.\\nThis is a subtitle. io:title"
+
+  #Plays a sound:
+  mySound: "notify io:sound sound:x.y.z"
+
+  #This one explicitly defines an io (bossbar) and adds one bossbarIO option + one soundIO option:
+  myBar: "notify This is a custom message. io:bossbar barColor:red sound:block.anvil.use"
+
+  #Some actions with categories.
+  myAction1: "notify This is a custom message! category:info"
+  myAction2: "notify This is a custom message! category:firstChoice,secondChoice"
+
+  #You can also override category settings:
+  myAction3: "notify Another message! category:info io:advancement frame:challenge"
+
+  #Use multiple languages:
+  multilanguage: "notify {en-US} Hello english person! {de-de} Hello german person! {es-ES} Hello spanish person!"
+```
+
+## `NotifyAll`
+
+__Context__: @snippet:action-meta:independent@  
+__Syntax__: `notifyall <message> [category] [io] [any io specific settings]`  
+__Description__: Send the notification to all players using the specified notifyIO.
+
+You can broadcast notifications to all online players on the server using the `notifyall` action.
+It works just like the notify action.
+Placeholders are resolved for each online player, not for the player the action is executed for.
+
+```YAML title="Example"
+actions:
+  announceDungeon: "notifyall A new dungeon has opened!"
+```
 
 ## `NpcTeleport`
 
